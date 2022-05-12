@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  mgm_client:
+    build:
+      context: ./docker-images/nginx_uwsgi
+      dockerfile: Dockerfile
+    image: burgueses/mgm_client:0.0.1
+    container_name: bur_mgm_client
+    restart: always
+    tty: true
+    ports:
+      - "3001:80"
+    volumes:
+      - ../mgm_client:/burgueses/app
+    networks:
+      - burgueses_network
+
+  db:
+    build:
+      context: ./docker-images/db
+      dockerfile: Dockerfile
+    image: burgueses/mariadb:0.0.1
+    command: --innodb-use-native-aio=0
+    container_name: bur_mysql
+    restart: always
+    tty: true
+    volumes:
+      - ../db/mysql:/var/lib/mysql
+      - ../db/backup:/backup
+    environment:
+      - MYSQL_DATABASE=BURGUESES
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - burgueses_network
+
+  mysqladmin:
+    image: phpmyadmin
+    container_name: bur_phpmysqladmin
+    restart: always
+    tty: true
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - "3002:80"
+    networks:
+      - burgueses_network
+
+networks:
+  burgueses_network:
+    driver: bridge
