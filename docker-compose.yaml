@@ -28,9 +28,24 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-    
     networks:
         - burgueses_network
+
+  client:
+    build:
+      context: ./docker-images/nginx_uwsgi
+      dockerfile: Dockerfile
+    image: burgueses/nginx_uwsgi:0.0.1
+    container_name: bur_client
+    restart: always
+    tty: true
+    ports:
+      - "3000:80"
+    volumes:
+      - ../controle-academia-api:/app
+      - ../logs/controle-academia-api:/burgueses/logs
+    networks:
+      - burgueses_network
 
 networks:
   burgueses_network:
