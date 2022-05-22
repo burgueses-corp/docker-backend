@@ -12,7 +12,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     
     volumes:
-      - /src/mondodb/db:/data/db
+      - ./src/mongo/db:/data/db
     networks:
         - burgueses_network
 

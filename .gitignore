@@ -1,0 +1,2 @@
+# ignore all db local
+/src/mongo/db/*
